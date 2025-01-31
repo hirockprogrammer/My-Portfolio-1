@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer/footer";
 import Nav from "@/components/nav/nav";
+import ReduxProvider from "@/utils/redux/reduxProvider";
 
 const montserrat = Montserrat({
   weight: ["400", "400"],
@@ -30,14 +31,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html data-theme="light" lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.className} antialiased`}
       >
-        {children}
-        <div className="">
-          <Footer />
-        </div>
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

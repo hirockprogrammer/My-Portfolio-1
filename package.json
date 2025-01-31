@@ -25,14 +25,18 @@
     "react-icons": "^5.4.0",
     "react-redux": "^9.2.0",
     "react-simple-typewriter": "^5.0.1",
-    "redux": "^5.0.1"
+    "redux": "^5.0.1",
+    "sweetalert": "^2.1.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/aos": "^3.0.7",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "daisyui": "^4.12.23",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "postcss": "^8",

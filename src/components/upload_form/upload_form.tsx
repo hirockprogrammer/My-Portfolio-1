@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FaGithub, FaLink, FaImage, FaClipboardList, FaFileAlt } from "react-icons/fa";
 import Image from "next/image";
 import axios from "axios";
+import swal from "sweetalert";
 type ProjectFormValues = {
     title: string;
     description: string;
@@ -13,18 +14,19 @@ type ProjectFormValues = {
     projectGithubLink: string;
     projectType: string;
     projectImage: string | any;
-    projectImages: string[];
+    projectImages: string[] | any;
 };
 
 export default function UploadForm() {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [multipleImagesPreview, setMultipleImagesPreview] = useState<string[]>([]);
-
+    const [loading, setLoading] = useState(false)
     const {
         register,
         handleSubmit,
         formState: { errors },
         setValue,
+        reset
     } = useForm<ProjectFormValues>();
 
     // Handle single image file input change and set preview
@@ -59,10 +61,37 @@ export default function UploadForm() {
     };
 
     const onSubmit = async (data: ProjectFormValues) => {
-        data.projectImage = imagePreview,
-            data.projectImages = multipleImagesPreview
-        const response = await axios.post("http://localhost:3001/pages/api/projects/upload_project", data)
-        console.log(response?.data)
+        setLoading(true)
+        try {
+            data.projectImage = imagePreview,
+                data.projectImages = multipleImagesPreview
+
+            const response = await axios.post("http://localhost:3000/pages/api/projects/upload_project", data)
+            if (response?.data?.success) {
+                swal({
+                    title: response?.data?.message,
+                    text: "You have upload a project",
+                    icon: "success"
+                })
+                reset()
+                setImagePreview(""),
+                    setMultipleImagesPreview([])
+                setLoading(false)
+            } else {
+                swal({
+                    title: response?.data?.message,
+                    text: "You have not upload a project",
+                    icon: "warning"
+                })
+                setLoading(true)
+            }
+
+        } catch (error) {
+            setLoading(true)
+            throw new Error(String(error))
+
+        }
+
     };
 
     return (
@@ -132,7 +161,7 @@ export default function UploadForm() {
                     <option value="backend">Backend</option>
                     <option value="fullstack">Full Stack</option>
                 </select>
-                {errors.projectType && <p className="text-red-500">{errors.projectType.message}</p>}
+                {errors.projectType && <p className="text-red-500">{String(errors.projectType.message)}</p>}
             </div>
 
             {/* Project Image (File Input) */}
@@ -150,7 +179,7 @@ export default function UploadForm() {
                     className="w-full p-2 border rounded"
 
                 />
-                {errors.projectImage && <p className="text-red-500">{errors.projectImage.message}</p>}
+                {errors.projectImage && <p className="text-red-500">{String(errors.projectImage.message)}</p>}
 
                 {/* Image Preview */}
                 {imagePreview && (
@@ -174,21 +203,23 @@ export default function UploadForm() {
                     className="w-full p-2 border rounded"
 
                 />
-                {errors.projectImages && <p className="text-red-500">{errors.projectImages.message}</p>}
+                {errors.projectImages && <p className="text-red-500">{String(errors.projectImages.message)}</p>}
 
                 {/* Multiple Images Preview */}
                 {multipleImagesPreview.length > 0 && (
-                    <div className="mt-4 flex gap-4">
-                        {multipleImagesPreview.map((preview, index) => (
-                            <Image
-                                key={index}
-                                src={preview}
-                                alt={`Preview ${index + 1}`}
-                                width={500}
-                                height={500}
-                                className="w-32 h-32 object-cover rounded-md"
-                            />
-                        ))}
+                    <div className=" overflow-x-scroll">
+                        <div className="mt-4 flex gap-4">
+                            {multipleImagesPreview.map((preview, index) => (
+                                <Image
+                                    key={index}
+                                    src={preview}
+                                    alt={`Preview ${index + 1}`}
+                                    width={500}
+                                    height={500}
+                                    className="w-32 h-32 object-cover rounded-md"
+                                />
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
@@ -198,7 +229,10 @@ export default function UploadForm() {
                 type="submit"
                 className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 flex items-center justify-center gap-2"
             >
-                Submit
+                {
+                    !loading ? "Submit" : <div className=" loading loading-spinner loading-md"></div>
+                }
+
             </button>
         </form>
     );

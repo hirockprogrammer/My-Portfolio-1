@@ -30,3 +30,17 @@ export const uploadToCloudinaryMultipleImages = async (img: string) => {
         throw new Error(String(error));
     }
 };
+
+export const uploadUserToCloudinary = async (img: string) => {
+    try {
+
+        const result = await cloudinary.uploader.upload(img, {
+            folder: "My_Portfolio/loggedUser",
+        });
+        return result
+
+
+    } catch (error) {
+        throw new Error(String(error));
+    }
+};

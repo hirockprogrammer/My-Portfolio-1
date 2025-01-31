@@ -11,7 +11,6 @@ const AppPage: React.FC = async (params: any) => {
 
   const frontendProjectsArr = await frontendProjects()
   const fullStackProjectsArr = await fullStackProjects()
-  console.log(fullStackProjectsArr)
 
 
   return (

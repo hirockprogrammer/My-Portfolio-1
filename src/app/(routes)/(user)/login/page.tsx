@@ -2,7 +2,10 @@
 import Nav from "@/components/nav/nav";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form"
+import swal from "sweetalert";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import {
     FaGoogle,
     FaEye,
@@ -11,6 +14,7 @@ import {
     FaLock,
 } from "react-icons/fa";
 import Link from "next/link";
+import axios from "axios";
 
 
 interface FormValues {
@@ -18,15 +22,38 @@ interface FormValues {
     password: string;
 }
 
-const Login:React.FC = () => {
+const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false)
+    const router = useRouter()
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>();
-    const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-        console.log(data);
+    const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+        setLoading(true)
+        try {
+            const response = await axios.post("http://localhost:3000/pages/api/user/login", data)
+            if (response?.data?.success) {
+                swal({
+                    title: response?.data?.message,
+                    icon: "success"
+                })
+                setLoading(false)
+                router.push("/")
+            } else {
+                swal({
+                    title: response?.data?.message,
+                    icon: "warning"
+                })
+                setLoading(false)
+            }
+        } catch (error) {
+            setLoading(false)
+            throw new Error(String(error))
+
+        }
     };
     return (
         <main className="">
@@ -129,7 +156,10 @@ const Login:React.FC = () => {
                                     type="submit"
                                     className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
                                 >
-                                    Login
+                                    {
+                                        !loading ? "Login" : <div className=" loading loading-spinner loading-md"></div>
+                                    }
+
                                 </button>
                             </form>
 
@@ -146,6 +176,7 @@ const Login:React.FC = () => {
                             </div>
 
                             <button
+                                onClick={() => signIn("google", { callbackUrl: "/" })}
                                 type="button"
                                 className="mt-6 flex items-center justify-center bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition duration-300 font-semibold shadow-md"
                             >

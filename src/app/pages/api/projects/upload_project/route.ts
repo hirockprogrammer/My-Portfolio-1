@@ -54,8 +54,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({
             message: "Data found",
             success: true,
-            reqBody
-
         })
 
     } catch (error: any) {

@@ -1,7 +1,10 @@
 "use client"
 
+import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
+import swal from "sweetalert"
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
     FaUser,
@@ -16,7 +19,7 @@ interface FormValues {
     email: string,
     password: string,
     retypePassword: string,
-    image: object
+    image: string | any
 
 }
 
@@ -24,17 +27,41 @@ const Register: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showRetypePassword, setShowRetypePassword] = useState<boolean>(false);
     const [imagePreview, setImagePreview] = useState<string | null>(null)
-
+    const [loading, setLoading] = useState(false)
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>();
 
-    const onSubmit: SubmitHandler<FormValues> = (data: FormValues) => {
-        if (typeof (data.image) === "object") {
-            alert("this is ")
+    const onSubmit: SubmitHandler<FormValues> = async (data: FormValues) => {
+        setLoading(true)
+
+        try {
+            data.image = imagePreview
+            const response = await axios.post("http://localhost:3000/pages/api/user/register", data)
+            if (response?.data?.success) {
+                swal({
+                    title: response?.data?.message,
+                    icon: "success"
+                })
+                setLoading(false)
+            } else {
+                swal({
+                    title: response?.data?.message,
+                    icon: "success"
+                })
+                setLoading(false)
+            }
+
+        } catch (error) {
+            setLoading(false)
+            throw new Error(String(error))
+
         }
+
+
+
 
     };
     const base64handler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,7 +209,7 @@ const Register: React.FC = () => {
                             </div>
                             {errors.image && (
                                 <p className="text-red-500 text-sm mt-1">
-                                    {errors.image.message}
+                                    {String(errors.image.message)}
                                 </p>
                             )}
                         </div>
@@ -194,16 +221,19 @@ const Register: React.FC = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold shadow-md"
                     >
-                        Register
+                        {
+                            !loading ? "Register" : <div className=" loading loading-spinner loading-md"></div>
+                        }
                     </button>
                 </form>
 
                 <div className="mt-4">
                     <p className="text-gray-600 text-sm">
                         Already have an account?{" "}
-                        <a href="/login" className="text-blue-600 hover:underline">
+                        <Link href="/login" className="text-blue-600 hover:underline">
                             Login
-                        </a>
+
+                        </Link>
                     </p>
                 </div>
             </div>
