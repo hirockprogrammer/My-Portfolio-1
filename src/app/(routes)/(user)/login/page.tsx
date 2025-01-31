@@ -15,16 +15,15 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import axios from "axios";
-
-
+import Footer from "@/components/footer/footer";
 interface FormValues {
     email: string;
     password: string;
 }
-
 const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false)
+    const [gooleLoading, setGooleLoading] = useState<boolean>(false)
     const router = useRouter()
     const {
         register,
@@ -52,9 +51,22 @@ const Login: React.FC = () => {
         } catch (error) {
             setLoading(false)
             throw new Error(String(error))
-
         }
     };
+
+    const googleLoginHandler = async () => {
+        setGooleLoading(true)
+        try {
+            await signIn("google", { callbackUrl: "/" })
+            setTimeout(() => {
+                setGooleLoading(false)
+            }, 1000)
+        } catch (error) {
+            setGooleLoading(false)
+            throw new Error(String(error))
+
+        }
+    }
     return (
         <main className="">
             <div className=" bg-zinc-100 max-md:h-screen">
@@ -176,15 +188,27 @@ const Login: React.FC = () => {
                             </div>
 
                             <button
-                                onClick={() => signIn("google", { callbackUrl: "/" })}
+                                onClick={googleLoginHandler}
                                 type="button"
                                 className="mt-6 flex items-center justify-center bg-red-500 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition duration-300 font-semibold shadow-md"
                             >
-                                <FaGoogle className="mr-2" /> Login with Google
+
+                                {
+                                    !gooleLoading ? <div className=" flex items-center">
+                                        <FaGoogle className="mr-2" /> Login with Google
+
+                                    </div> :
+                                        <div className=" w-32 flex justify-center items-center">
+                                            <div className=" loading loading-spinner loading-md"></div>
+                                        </div>
+                                }
+
+
                             </button>
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     );

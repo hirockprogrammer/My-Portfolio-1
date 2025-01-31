@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/utils/db_connection/db_connection";
-import { UploadedProject } from "@/lib/models/schema";
-export async function GET(req: NextRequest, res: any) {
-    try {
-        await connectToDatabase()
-        const frontendProjects = await UploadedProject.find({
-            projectType: "frontend"
 
-        })
+import { NextResponse } from "next/server";
+import { MongoDBConnection } from "@/utils/mongodb_connction/mongodb_connction";
+export async function GET() {
+    try {
+        const client = await MongoDBConnection()
+        const frontendProjects = await client.db("Project").collection("projects").find({
+
+            projectType: "frontend"
+        }).toArray()
         return NextResponse.json({
             message: "Data is found",
             success: true,

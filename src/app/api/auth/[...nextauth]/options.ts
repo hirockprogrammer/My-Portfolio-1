@@ -44,7 +44,7 @@ export const authOptions: AuthOptions = {
                             status: "google",
                             role: "user",
                         };
-                        const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "30d" });
+                        const token = jwt.sign(tokenData, process.env.TOKEN_SECRET!, { expiresIn: "1d" });
                         (await cookies()).set("token", token, { httpOnly: true })
                     }
                 } else {
