@@ -158,7 +158,6 @@ export default function UploadForm() {
                     className="w-full p-2 border rounded"
                 >
                     <option value="frontend">Frontend</option>
-                    <option value="backend">Backend</option>
                     <option value="fullstack">Full Stack</option>
                 </select>
                 {errors.projectType && <p className="text-red-500">{String(errors.projectType.message)}</p>}

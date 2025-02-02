@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
         const uploadProject = await uploadToCloudinary(projectImage)
         const client = await MongoDBConnection()
-        const Save = await client.db("Project").collection("projects").insertOne(
+        const uploadedProjects = await client.db("Project").collection("projects").insertOne(
             {
                 title,
                 description,
@@ -49,12 +49,18 @@ export async function POST(request: NextRequest) {
 
             }
         )
-        console.log(Save)
+        if (uploadedProjects?.insertedId) {
+            return NextResponse.json({
+                message: "Upload successfuly",
+                success: true,
+            })
+        } else {
+            return NextResponse.json({
+                message: "Upload not successfully",
+                success: false,
+            })
+        }
 
-        return NextResponse.json({
-            message: "Data found",
-            success: true,
-        })
 
     } catch (error: any) {
         return NextResponse.json({

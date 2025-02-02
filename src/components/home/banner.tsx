@@ -33,7 +33,7 @@ const Banner = () => {
                         {/* ----------- */}
                         <div className=" mt-5 flex">
                             <div className="  mt-10 max-md:mt-5 max-md:flex-col ">
-                                <div className=" ">
+                                <div className=" " data-aos="fade">
                                     <p className=" lg:w-5/6 text-2xl max-md:text-xl max-sm:text-base leading-10 ">
                                         Proficient MERN and Next.js full-stack developer adept at
                                         crafting dynamic, scalable web solutions with React,
@@ -51,7 +51,7 @@ const Banner = () => {
 
                             </div>
                             <div className="">
-                                <div className=" relative -bottom-24  w-[400px] max-lg:right-5  max-lg:w-72 max-md:hidden shadow-lg shadow-slate-400 rounded-full overflow-hidden">
+                                <div className=" relative -bottom-24  w-[400px] max-lg:right-5  max-lg:w-72 max-md:hidden shadow-lg shadow-slate-400 rounded-full overflow-hidden" data-aos="fade">
                                     <Image
                                         src="https://i.ibb.co.com/xmhv2Yh/hirock-dutta.jpg"
                                         alt="hirock"

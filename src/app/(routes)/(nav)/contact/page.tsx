@@ -1,6 +1,10 @@
 import Footer from "@/components/footer/footer"
 import Nav from "@/components/nav/nav"
-
+import { Metadata } from "next"
+export const metadata:Metadata={
+    title:"contact",
+    description:"This is a "
+}
 const ContactPage = () => {
     return (
         <main>

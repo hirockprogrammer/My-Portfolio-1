@@ -41,8 +41,6 @@ const Section_1 = () => {
                     </div>
                 </div>
             </div>
-
-
         </div>
     )
 }

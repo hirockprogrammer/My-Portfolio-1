@@ -1,22 +1,37 @@
 
+import { Metadata} from "next";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import Image from "next/image";
 import CommentBox from "@/components/ui/projects/commentBox";
 import LikeBtn from "@/components/ui/projects/likeBtn";
-const Products = async({ params }: { params: Promise<{ [key: string]: string | string[] | undefined }> }) => {
+import { ProjectDetails } from "@/app/actions/actions";
+type Props = {
+    params: Promise<{ details: string }>
+}
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const id = (await params).details
+    const project = await ProjectDetails(id)
+    return {
+        title: `Hirock | ${project?.title}`,
+        icons: project?.projectImage,
+        description: project?.description
+    }
+}
+
+const Products = async ({ params }: { params: Promise<{ [key: string]: string | string[] | undefined }> }) => {
     const Id = (await params).details
-    console.log(Id)
+    const project = await ProjectDetails(Id)
     return (
         <div className="max-w-4xl mx-auto p-6">
             {/* Title and Description */}
-            <h1 className="text-3xl font-bold text-center">Project Title</h1>
-            <p className="text-gray-600 text-center mt-2">This is a description of the project with details.</p>
+            <h1 className="text-3xl font-bold text-center">{project?.title}</h1>
+            <p className="text-gray-600 text-center mt-2">{project?.description}</p>
 
             {/* Main Image */}
             <div className="mt-6 flex justify-center">
                 <Image
-                    src="https://res.cloudinary.com/dusp1j4e0/image/upload/v1738296567/My_Portfolio/projectImage/gnbnhtrcdqt1z7cqcukb.png"
-                    alt="Main Project Image"
+                    src={project?.projectImage?.image}
+                    alt={project?.title}
                     width={600}
                     height={400}
                     className="rounded-lg shadow-lg"
@@ -25,10 +40,10 @@ const Products = async({ params }: { params: Promise<{ [key: string]: string | s
 
             {/* Gallery */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-                {[1, 2, 3, 4, 5, 6].map((num) => (
+                {project?.projectImages?.map((num: any, index: any) => (
                     <Image
-                        key={num}
-                        src={`https://res.cloudinary.com/dusp1j4e0/image/upload/v1738296567/My_Portfolio/projectImage/gnbnhtrcdqt1z7cqcukb.png`}
+                        key={index}
+                        src={num?.image}
                         alt={`Project Image ${num}`}
                         width={150}
                         height={100}
@@ -48,7 +63,7 @@ const Products = async({ params }: { params: Promise<{ [key: string]: string | s
             </div>
 
             {/* Like and Share */}
-            <LikeBtn/>
+            <LikeBtn />
 
             {/* Comment Section */}
             <CommentBox />

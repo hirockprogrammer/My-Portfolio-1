@@ -1,15 +1,13 @@
 // features/exampleSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import { createSlice } from "@reduxjs/toolkit";
 interface ExampleState {
     value: number;
     loggedUser: null,
-}
 
+}
 const initialState: ExampleState = {
     value: 0,
     loggedUser: null,
-
 };
 
 const Slice: any = createSlice({
@@ -24,6 +22,5 @@ const Slice: any = createSlice({
         }
     },
 });
-
 export const { addUser, removeUser } = Slice.actions;
 export default Slice.reducer;
